@@ -11,3 +11,9 @@
 .shimora-visual{max-width:560px;justify-self:end;overflow:hidden;border-radius:4px;box-shadow:18px 18px 0 var(--yellow)}
 .shimora-visual img{display:block;width:100%;height:auto;aspect-ratio:1.15;object-fit:cover;object-position:center}
 @media(max-width:750px){.shimora-intro{grid-template-columns:1fr;padding:70px 9vw}.shimora-visual{width:100%;justify-self:stretch;box-shadow:12px 12px 0 var(--yellow)}}
+
+
+/* Keep the SHIMORA artwork fully visible in a short, wide frame. */
+.shimora-visual{width:100%;max-width:680px;aspect-ratio:16 / 9;background:#f8f3e9}
+.shimora-visual img{width:100%;height:100%;object-fit:contain;object-position:center}
+@media(max-width:750px){.shimora-visual{aspect-ratio:16 / 9}}
