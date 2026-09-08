@@ -1,0 +1,29 @@
+:root{--ink:#1d2930;--cream:#fffaf0;--paper:#f5eee2;--coral:#ed745b;--yellow:#ffd463;--line:#d9d0c2}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif}
+a{color:inherit}
+.policy-header{min-height:74px;padding:18px clamp(22px,6vw,84px);display:flex;align-items:center;justify-content:space-between;gap:24px;border-bottom:1px solid var(--line);background:rgba(255,250,240,.96)}
+.brand{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:18px;font-weight:700;text-decoration:none}
+.brand em{font-family:'Playfair Display',serif;font-weight:600}
+.brand-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--coral);color:#fff;font:600 21px 'Playfair Display',serif}
+.back-link{font-size:14px;font-weight:700;text-underline-offset:4px}
+.policy-hero{padding:72px clamp(22px,12vw,170px) 48px;background:var(--paper)}
+.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:11px;font-weight:700;color:#697276}
+h1,h2{font-family:'Playfair Display',serif;line-height:1.08}
+h1{max-width:800px;margin:14px 0 18px;font-size:clamp(42px,6vw,68px);letter-spacing:-.045em}
+.policy-hero p:last-child{max-width:680px;margin:0;color:#566064;line-height:1.65}
+.policy-content{max-width:900px;margin:0 auto;padding:58px 24px 80px}
+.policy-content h2{margin:44px 0 14px;font-size:28px}
+.policy-content h2:first-child{margin-top:0}
+.policy-content p,.policy-content li{font-size:16px;line-height:1.75;color:#465156}
+.policy-content li+li{margin-top:8px}
+.notice{margin:34px 0;padding:22px;border-left:5px solid var(--coral);background:#fff}
+.notice p{margin:0;color:var(--ink)}
+.contact-card{padding:28px;background:var(--yellow)}
+.contact-card p{margin:7px 0;color:var(--ink)}
+.policy-footer{padding:32px clamp(22px,6vw,84px);background:var(--ink);color:#fff}
+.policy-footer nav{display:flex;flex-wrap:wrap;gap:14px 24px;margin-bottom:18px}
+.policy-footer a{font-size:13px}
+.policy-footer p{margin:0;color:#bdc5c6;font-size:12px}
+@media(max-width:650px){.policy-header{align-items:flex-start;flex-direction:column}.policy-hero{padding-top:52px}.brand{font-size:16px}.policy-content{padding-top:42px}.policy-footer nav{flex-direction:column}}

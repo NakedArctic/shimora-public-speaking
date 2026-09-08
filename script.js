@@ -22,5 +22,5 @@ document.querySelector('.upi').addEventListener('click', event => {
   });
 });
 const weeklyBasicPlan = document.querySelector('.basic-tier .tier-plan');
-weeklyBasicPlan.querySelector('strong').innerHTML = '₹2,000 <small>/ week</small>';
-weeklyBasicPlan.querySelector('p').textContent = '3 sessions per month';
+weeklyBasicPlan.querySelector('strong').textContent = '₹2,000';
+weeklyBasicPlan.querySelector('p').textContent = '2–3 sessions per week';
