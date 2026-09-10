@@ -12,7 +12,7 @@
 - User explicitly approved teacher access for `shimora32@gmail.com` and SHIMORA-managed accounts only. Public registration remains disabled.
 - The `shimora32@gmail.com` Authentication account is confirmed, has completed a real sign-in, and is assigned in `public.student_teachers`.
 - Automated checks pass: 21 tests, with the public website build completing successfully.
-- Pending: website publication.
+- Published at `https://shimora.online/student.html` and verified on the live site.
 - Existing website repository: `https://github.com/NakedArctic/shimora-public-speaking.git`.
 
 The dashboard lives at `/student.html`. It uses Supabase email codes and Postgres storage, and can run on the site's existing static hosting. There is no automatic link between payments and enrolment. Accounts and class assignments are managed by SHIMORA.
