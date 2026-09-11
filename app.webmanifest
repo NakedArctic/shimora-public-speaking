@@ -1,0 +1,19 @@
+{
+  "id": "/student.html",
+  "name": "SHIMORA Student",
+  "short_name": "SHIMORA",
+  "description": "Classes, questions and teacher replies for SHIMORA students.",
+  "start_url": "/student.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fffaf3",
+  "theme_color": "#ef765f",
+  "categories": ["education"],
+  "icons": [
+    { "src": "/app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Open student dashboard", "short_name": "Dashboard", "url": "/student.html" }
+  ]
+}

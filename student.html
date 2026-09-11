@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#ef765f"><meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="SHIMORA">
   <title>Student dashboard | SHIMORA</title>
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="/favicon.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/app.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="student.css">
-  <script src="student-config.js" defer></script><script src="student.js" defer></script>
+  <script src="student-config.js" defer></script><script src="student.js" defer></script><script src="app-install.js" defer></script>
 </head>
 <body>
-  <header class="site-header"><a class="brand" href="/"><span class="brand-mark">S</span>SHIMORA <em>Public Speaking</em></a><a class="text-link" href="/">Back to website</a></header>
+  <header class="site-header"><a class="brand" href="/"><span class="brand-mark">S</span>SHIMORA <em>Public Speaking</em></a><div class="app-actions"><button class="install-button" id="install-app" type="button" hidden>Install app</button><a class="text-link" href="/">Back to website</a></div></header>
+  <p id="install-status" class="install-status" role="status" aria-live="polite"></p>
   <main class="student-main">
     <section id="login-view" class="login-layout">
       <div class="welcome-copy"><p class="eyebrow">Your learning space</p><h1>A little practice.<br><i>A stronger voice.</i></h1><p>Your classes, your questions, and your next brave step—all in one place.</p><div class="welcome-note"><span>01</span><p><strong>Make room for your questions.</strong><br>Ask your teacher whenever you need a little clarity.</p></div></div>
