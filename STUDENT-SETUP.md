@@ -5,6 +5,7 @@
 - SHIMORA Free organization and SHIMORA Student Dashboard project created in Singapore.
 - Project reference: `yhrtxluyyfgaqjdcafqb`; public website connection configured in `student-config.js`.
 - `database/students.sql` installed successfully. Automatic RLS enabled; automatic table grants disabled.
+- `database/student-classes.sql` installed successfully. Timetable access is restricted to the signed-in student; anonymous access is denied.
 - Live transactional checks passed for student profile/enrolment/query isolation, denial of student teacher-role escalation and forged answers, valid student question submission, teacher inbox access and teacher reply retrieval. All temporary test records rolled back.
 - Anonymous REST access to student questions returns permission denied (401).
 - Gmail custom SMTP is configured with `shimora32@gmail.com` as both the SHIMORA sender and SMTP username. A real sign-in code request completed successfully.
@@ -19,7 +20,7 @@ The dashboard lives at `/student.html`. It uses Supabase email codes and Postgre
 
 ## Activate
 
-1. Create or select a Supabase project and run `database/students.sql` once in its SQL editor.
+1. Create or select a Supabase project and run `database/students.sql` and `database/student-classes.sql` once in its SQL editor.
 2. In Authentication, enable email sign-in, disable public account registration, and set the Site URL to `https://shimora.online`. Configure your SMTP provider to deliver sign-in emails to students. The default development mail service is insufficient for general student delivery.
 3. Edit the **Magic Link** email template to display `{{ .Token }}` as the sign-in code. The page accepts 6–10 digit codes, not link callbacks. Give the template a clear SHIMORA subject and explain the expiry configured in Supabase.
 4. Put the project's HTTPS URL and **publishable key** in `student-config.js`. This file is public. Never put a secret or service-role key here.
@@ -38,7 +39,23 @@ values ('STUDENT-ACCOUNT-UUID', 'Public speaking', 'Your confirmed class schedul
 on conflict (student_id) do update set programme=excluded.programme, schedule=excluded.schedule;
 ```
 
-8. Build and publish through the site's existing deployment workflow. No changes to payment settings are required.
+8. Add each class to the student's calendar using their Authentication account UUID. Dates include the time-zone offset; this example uses India Standard Time:
+
+```sql
+insert into public.student_classes (student_id, title, starts_at, ends_at, location, notes)
+values (
+  'STUDENT-ACCOUNT-UUID',
+  'Public speaking',
+  '2026-09-14 16:00:00+05:30',
+  '2026-09-14 17:00:00+05:30',
+  'https://meet.google.com/your-class-link',
+  'Bring your prepared speech.'
+);
+```
+
+The location can be a room name or an HTTPS meeting link. The dashboard shows the current week and lets students move between weeks.
+
+9. Build and publish through the site's existing deployment workflow. No changes to payment settings are required.
 
 ## Before opening to students
 

@@ -1,4 +1,4 @@
-const CACHE = 'shimora-student-v1';
+const CACHE = 'shimora-student-v2';
 const APP_SHELL = [
   '/student.html', '/styles.css', '/student.css', '/student-config.js', '/student.js',
   '/app-install.js', '/app.webmanifest', '/app-icon.svg', '/favicon.png',

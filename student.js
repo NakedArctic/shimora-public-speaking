@@ -3,13 +3,14 @@
   const $ = selector => document.querySelector(selector);
   const config = window.SHIMORA_STUDENTS || {};
   const sessionKey = 'shimora.student.session';
-  let session = null, student = null, questions = [], teacher = false, email = '';
+  let session = null, student = null, questions = [], classSchedule = [], teacher = false, email = '';
+  let calendarWeek = startOfWeek(new Date());
   let generation = 0;
   const configured = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(config.url || '') && Boolean(config.publishableKey);
   function message(id, text, error = false) { const el = $(id); el.textContent = text; el.classList.toggle('error', error); }
   function clearSession() {
     generation++;
-    session = null; student = null; questions = []; teacher = false;
+    session = null; student = null; questions = []; classSchedule = []; teacher = false;
     try { sessionStorage.removeItem(sessionKey); } catch {}
     $('#dashboard-view').hidden = true; $('#login-view').hidden = false; $('#teacher-view').hidden = true;
     $('#query-list').replaceChildren(); $('#teacher-list').replaceChildren();
@@ -47,6 +48,45 @@
   }
   function textElement(tag, text, className) { const el = document.createElement(tag); el.textContent = text; if (className) el.className = className; return el; }
   function date(value) { return new Date(value).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }); }
+  function startOfWeek(value) {
+    const day = new Date(value); day.setHours(0, 0, 0, 0);
+    day.setDate(day.getDate() - ((day.getDay() + 6) % 7));
+    return day;
+  }
+  function sameDay(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
+  function timetableEvent(item) {
+    const card = textElement('article', '', 'timetable-event');
+    const start = new Date(item.starts_at), end = new Date(item.ends_at);
+    const time = textElement('time', `${start.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}–${end.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`);
+    card.append(time, textElement('h3', item.title));
+    if (item.location) {
+      let location = textElement('p', item.location, 'class-location');
+      try {
+        const url = new URL(item.location);
+        if (url.protocol === 'https:') { location = document.createElement('a'); location.href = url.href; location.target = '_blank'; location.rel = 'noopener noreferrer'; location.className = 'class-location'; location.textContent = 'Join online class ↗'; }
+      } catch {}
+      card.append(location);
+    }
+    if (item.notes) card.append(textElement('p', item.notes, 'class-notes'));
+    return card;
+  }
+  function renderTimetable() {
+    const weekEnd = new Date(calendarWeek); weekEnd.setDate(weekEnd.getDate() + 6);
+    const shortDate = value => value.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    $('#week-label').textContent = `${shortDate(calendarWeek)} – ${shortDate(weekEnd)}, ${weekEnd.getFullYear()}`;
+    const today = new Date();
+    const days = Array.from({ length: 7 }, (_, offset) => {
+      const day = new Date(calendarWeek); day.setDate(day.getDate() + offset);
+      const column = textElement('section', '', `calendar-day${sameDay(day, today) ? ' today' : ''}`);
+      column.setAttribute('aria-label', day.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }));
+      const heading = textElement('div', '', 'calendar-date');
+      heading.append(textElement('span', day.toLocaleDateString(undefined, { weekday: 'short' })), textElement('strong', day.getDate()));
+      const events = classSchedule.filter(item => sameDay(new Date(item.starts_at), day));
+      column.append(heading, ...(events.length ? events.map(timetableEvent) : [textElement('p', 'No class', 'no-class')]));
+      return column;
+    });
+    $('#calendar-grid').replaceChildren(...days);
+  }
   function questionCard(question, forTeacher = false) {
     const card = textElement('article', '', 'question');
     const meta = textElement('div', '', 'question-meta');
@@ -88,10 +128,11 @@
   }
   async function loadDashboard() {
     const current = generation;
-    const [profiles, enrolments, ownQuestions, roles] = await Promise.all([
+    const [profiles, enrolments, ownQuestions, classes, roles] = await Promise.all([
       request(`/rest/v1/student_profiles?id=eq.${student.id}&select=display_name,goal`),
       request(`/rest/v1/student_enrolments?student_id=eq.${student.id}&select=programme,schedule`),
       request(`/rest/v1/student_queries?student_id=eq.${student.id}&select=*&order=created_at.desc`),
+      request(`/rest/v1/student_classes?student_id=eq.${student.id}&select=id,title,starts_at,ends_at,location,notes&order=starts_at.asc`),
       request('/rest/v1/student_teachers?select=user_id')
     ]);
     if (current !== generation) return;
@@ -103,7 +144,7 @@
     $('#profile-form').elements.goal.value = profile.goal || '';
     $('#programme').textContent = enrolment?.programme || 'Not assigned yet';
     $('#class-note').textContent = enrolment?.schedule || 'Your teacher will add your class details here.';
-    questions = ownQuestions; renderQuestions();
+    questions = ownQuestions; classSchedule = classes; renderQuestions(); renderTimetable();
     $('#teacher-view').hidden = !teacher;
     if (teacher) {
       const all = await request('/rest/v1/rpc/teacher_query_inbox', { method: 'POST', body: {} });
@@ -150,6 +191,9 @@
     questions.unshift(submitted[0]); $('#query-filter').value = 'all'; renderQuestions(); $('#query-form').reset(); message('#query-message', 'Question sent. Your teacher’s reply will appear below.');
   });
   $('#query-filter').addEventListener('change', renderQuestions);
+  $('#previous-week').addEventListener('click', () => { calendarWeek.setDate(calendarWeek.getDate() - 7); renderTimetable(); });
+  $('#next-week').addEventListener('click', () => { calendarWeek.setDate(calendarWeek.getDate() + 7); renderTimetable(); });
+  $('#current-week').addEventListener('click', () => { calendarWeek = startOfWeek(new Date()); renderTimetable(); });
   $('#refresh').addEventListener('click', async () => {
     $('#refresh').disabled = true; message('#dashboard-message', 'Refreshing…');
     try { await loadDashboard(); message('#dashboard-message', 'You’re up to date.'); } catch (error) { message('#dashboard-message', error.message, true); }
